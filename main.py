@@ -1,6 +1,30 @@
+import random
 MAX_LINES = 3
 MAX_BET = 100
 MIN_BET = 1
+ROWS = 3
+COLS = 3
+
+symbol_count = {
+    "A": 2,
+    "B": 4,
+    "C": 6,
+    "D": 8
+}
+
+
+def get_mach_spin(rows, cols, symbols):
+    all_symbols = []
+    for symbol, symbol_count in symbols.items():
+        for _ in range(symbol_count):
+            all_symbols.append(symbol)
+
+    columns = []
+    for col in range(cols):
+        column = []
+        current_symbols = all_symbols[:]
+        for row in range(rows):
+            value = random.choice(all_symbols)
 
 
 def inp_deposit():
@@ -34,7 +58,8 @@ def inp_num_lines():
 
 def get_bet():
     while True:
-        bet = (input(f"What would you like to BET [{MIN_BET}-{MAX_BET}] on each line : $"))
+        bet = (
+            input(f"What would you like to BET [{MIN_BET}-{MAX_BET}] on each line : $"))
         if bet.isdigit():
             bet = int(bet)
             if bet >= MIN_BET & bet <= MAX_BET:
@@ -56,5 +81,8 @@ def main():
             print(f"Insufficient balance. Current balance ${balance}.")
         else:
             break
-    print(f"You are betting ${bet} on {lines} lines. Total amount of bet is ${total_bet}")
+    print(
+        f"You are betting ${bet} on {lines} lines. Total amount of bet is ${total_bet}")
+
+
 main()
