@@ -11,6 +11,27 @@ symbol_count = {
     "C": 6,
     "D": 8
 }
+symbol_values = {
+    "A": 5,
+    "B": 4,
+    "C": 3,
+    "D": 2
+}
+
+
+def check_win(columns, lines, bet, values):
+    winnings = 0
+    winnings_lines = []
+    for line in range(lines):
+        symbol = columns[0][line]
+        for column in columns:
+            symbol_to_check = column[line]
+            if symbol_to_check != symbol:
+                break
+        else:
+            winnings += values[symbol] * bet
+            winnings_lines.append(line+1)
+    return winnings, winnings_lines
 
 
 def get_mach_spin(rows, cols, symbols):
@@ -25,6 +46,20 @@ def get_mach_spin(rows, cols, symbols):
         current_symbols = all_symbols[:]
         for row in range(rows):
             value = random.choice(all_symbols)
+            current_symbols.remove(value)
+            column.append(value)
+        columns.append(column)
+    return columns
+
+
+def print_slot_mach(columns):
+    for row in range(len(columns[0])):
+        for i, column in enumerate(columns):
+            if i != len(column)-1:
+                print(column[row], end=" | ")
+            else:
+                print(column[row], end="")
+        print()
 
 
 def inp_deposit():
@@ -71,8 +106,7 @@ def get_bet():
     return bet
 
 
-def main():
-    balance = inp_deposit()
+def game(balance):
     lines = inp_num_lines()
     while True:
         bet = get_bet()
@@ -83,6 +117,24 @@ def main():
             break
     print(
         f"You are betting ${bet} on {lines} lines. Total amount of bet is ${total_bet}")
+
+    slots = get_mach_spin(ROWS, COLS, symbol_count)
+    print_slot_mach(slots)
+    winnings, winnings_lines = check_win(slots, lines, bet, symbol_values)
+    print(f"You won ${winnings}")
+    print(f"You won on lines : ", *winnings_lines)
+    return winnings-total_bet
+
+
+def main():
+    balance = inp_deposit()
+    while True:
+        print(f"Current balance is ${balance}")
+        spin = input("Press enter to spin(q to quit)")
+        if spin == 'q' or spin == 'Q':
+            break
+        balance += game(balance)
+    print(f"You left with {balance}")
 
 
 main()
